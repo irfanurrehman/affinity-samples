@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  generateName: anti-affinity-
+  labels:
+    app: anti-affinity
+spec:
+  replicas: 20
+  selector:
+    matchLabels:
+      app: anti-affinity
+  template:
+    metadata:
+      labels:
+        app: anti-affinity
+    spec:
+      imagePullSecrets:
+      - name: docker-credentials
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: type
+                operator: In
+                values:
+                - node-affinity
+            topologyKey: kubernetes.io/hostname
+      containers:
+      - name: perf-1
+        image: busybox
+        command: [ "/bin/sh", "-c", "--" ]
+        args: [ "while true; do sleep 2419200; done;" ]
+
+

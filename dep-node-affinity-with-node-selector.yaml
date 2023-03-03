@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  generateName: node-affinity-and-selector-
+  labels:
+    type: node-affinity-and-selector
+spec:
+  replicas: 200
+  selector:
+    matchLabels:
+      type: node-affinity-and-selector
+  template:
+    metadata:
+      labels:
+        type: node-affinity-and-selector
+    spec:
+      imagePullSecrets:
+      - name: docker-credentials
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/arch
+                operator: In
+                values:
+                - amd64
+            - matchExpressions:
+              - key: kubernetes.io/arch
+                operator: In
+                values:
+                - amd64
+      nodeSelector:
+        kubernetes.io/arch: amd64
+      containers:
+      - name: perf-1
+        image: busybox
+        command: [ "/bin/sh", "-c", "--" ]
+        args: [ "while true; do sleep 2419200; done;" ]
+
+

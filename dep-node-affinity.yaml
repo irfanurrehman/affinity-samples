@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  generateName: node-affinity-
+  labels:
+    type: node-affinity
+spec:
+  replicas: 20
+  selector:
+    matchLabels:
+      type: node-affinity
+  template:
+    metadata:
+      labels:
+        type: node-affinity
+    spec:
+      imagePullSecrets:
+      - name: docker-credentials
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: type
+                operator: In
+                values:
+                - node-for-affinity1
+      containers:
+      - name: perf-1
+        image: busybox
+        command: [ "/bin/sh", "-c", "--" ]
+        args: [ "while true; do sleep 2419200; done;" ]
+
+

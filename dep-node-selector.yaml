@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  generateName: node-selector-
+  labels:
+    type: node-selector
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      type: node-selector
+  template:
+    metadata:
+      labels:
+        type: node-selector
+    spec:
+      imagePullSecrets:
+      - name: docker-credentials
+      nodeSelector:
+        kubernetes.io/arch: amd64
+      containers:
+      - name: perf-1
+        image: busybox
+        command: [ "/bin/sh", "-c", "--" ]
+        args: [ "while true; do sleep 2419200; done;" ]
+
+
